@@ -1,12 +1,11 @@
 "use strict";
 
-import httpPostJson from "./utils/http-actions.js";
-import path from "path";
-import autoLoad from "@fastify/autoload";
-import successHandler from "./utils/success-handler.js";
-import { config } from "./lib/logger.js";
+const { httpPostJson } = require("./utils/http-actions.js");
+const path = require("path");
+const autoLoad = require("@fastify/autoload");
+const { successHandler } = require("./utils/success-handler.js");
 
-export default async function (fastify, opts) {
+module.exports = async function (fastify, opts) {
   fastify.decorate("httpPostRequest", httpPostJson);
   fastify.decorate("sendSuccessResponse", successHandler);
 
@@ -17,6 +16,4 @@ export default async function (fastify, opts) {
     ignorePattern: /.*.no-load\.js/,
     indexPattern: /^no$/i,
   });
-}
-
-export const options = config;
+};

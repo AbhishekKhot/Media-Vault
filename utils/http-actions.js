@@ -1,7 +1,6 @@
 "use strict";
 
-import axios from "axios";
-import { options } from "../app";
+const axios = require("axios");
 
 async function httpRequest({
   url,
@@ -64,17 +63,19 @@ async function httpRequest({
   }
 }
 
-export async function httpGetJson(options = {}) {
+async function httpGetJson(options = {}) {
   options.method = "GET";
   return httpRequest(options);
 }
 
-export async function httpPostJson(options = {}) {
+async function httpPostJson(options = {}) {
   options.method = "POST";
   return httpRequest(options);
 }
 
-export async function httpPutJson(options = {}) {
+async function httpPutJson(options = {}) {
   options.method = "PUT";
   return httpRequest(options);
 }
+
+module.exports = { httpGetJson, httpPutJson, httpPostJson };

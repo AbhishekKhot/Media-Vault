@@ -1,9 +1,9 @@
 "use strict";
 
-import fs from "fs";
-import path from "path";
-import Sequelize from "sequelize";
-import dotenv from "dotenv";
+const fs = require("fs");
+const path = require("path");
+const Sequlize = require("sequelize");
+const dotenv = require("dotenv");
 dotenv.config();
 
 let dbInstance = null;
@@ -94,6 +94,6 @@ class DatabaseInstance {
   }
 }
 
-export default function connectToDB() {
+module.exports = function connectToDB() {
   return new DatabaseInstance();
-}
+};
