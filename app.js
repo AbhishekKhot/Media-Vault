@@ -1,15 +1,15 @@
 "use strict";
-
-const { httpPostJson } = require("./utils/http-actions.js");
+require("dotenv").config();
 const path = require("path");
-const autoLoad = require("@fastify/autoload");
-const { successHandler } = require("./utils/success-handler.js");
+const AutoLoad = require("@fastify/autoload");
+const { httpPostJson } = require("./utils/http-actions");
+const successHandler = require("./utils/success-handler");
 
 module.exports = async function (fastify, opts) {
   fastify.decorate("httpPostRequest", httpPostJson);
   fastify.decorate("sendSuccessResponse", successHandler);
 
-  fastify.register(autoLoad, {
+  fastify.register(AutoLoad, {
     dir: path.join(__dirname, "plugins"),
     options: Object.assign({}, opts),
     dirNameRoutePrefix: false,

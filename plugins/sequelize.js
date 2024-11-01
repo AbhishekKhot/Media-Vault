@@ -1,10 +1,13 @@
 "use strict";
 
 const fp = require("fastify-plugin");
-const connectToDB = require("../common/sequelize.js");
+const connectToDB = require("../common/sequelize");
 
 module.exports = fp(async (fastify) => {
   const db = connectToDB();
   fastify.decorate("sequelize", db);
-  fastify.addHook("onClose", async () => await db.sequelize.close());
+
+  fastify.addHook("onClose", async () => {
+    await db.sequelize.close();
+  });
 });

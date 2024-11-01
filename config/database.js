@@ -1,9 +1,8 @@
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv").config();
 
-export default {
+module.exports = {
   development: {
-    url: process.env.MASTER_DATABASE_URL,
+    url: process.env.WRITE_DATABASE_URL,
     dialect: "postgres",
   },
   test: {
@@ -11,7 +10,7 @@ export default {
     dialect: "postgres",
   },
   production: {
-    url: process.env.MASTER_DATABASE_URL,
+    url: process.env.WRITE_DATABASE_URL,
     dialect: "postgres",
   },
 };

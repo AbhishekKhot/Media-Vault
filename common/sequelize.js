@@ -2,9 +2,8 @@
 
 const fs = require("fs");
 const path = require("path");
-const Sequlize = require("sequelize");
-const dotenv = require("dotenv");
-dotenv.config();
+const Sequelize = require("sequelize");
+require("dotenv").config();
 
 let dbInstance = null;
 
@@ -35,7 +34,7 @@ class DatabaseInstance {
   #getDBConfig() {
     const config = {
       replication: {
-        read: [this.#getDBCredentials(process.env.READ_REPLICA_DATABASE_URL)],
+        read: [this.#getDBCredentials(process.env.READ_DATABASE_URL)],
         write: {
           url: this.#getWriteDB(),
         },
@@ -55,20 +54,24 @@ class DatabaseInstance {
   #getWriteDB() {
     return process.env.NODE_ENV === "test"
       ? process.env.TEST_DATABASE_URL
-      : process.env.MASTER_DATABASE_URL;
+      : process.env.WRITE_DATABASE_URL;
   }
 
   #getDBCredentials(DBUrl) {
     const url = new URL(DBUrl);
-    return {
-      host: url.host,
-      username: url.host,
-      password: url.passowrd,
+    const cred = {
+      host: url.hostname,
+      port: url.port || 5432,
+      username: url.username,
+      password: url.password,
+      database: url.pathname.slice(1),
     };
+    console.log(cred);
+    return cred;
   }
 
   #registerModels(db, sequelize) {
-    const modelsPath = path.join(path.resolve(), "..", "models");
+    const modelsPath = path.join(path.resolve(), "models");
     const basename = path.basename(__filename);
 
     fs.readdirSync(modelsPath)
