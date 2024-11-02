@@ -5,13 +5,15 @@
   "scripts": {
     "dev": "nodemon --watch . --ignore 'node_modules build dist .git logs tmp/*' --exec 'node server.js'",
     "start": "node server.js",
-    "up": "cross-env DATABASE_NAME=$npm_config_database NODE_ENV=development npx sequelize-cli db:migrate",
-    "down": "cross-env DATABASE_NAME=$npm_config_database NODE_ENV=development npx sequelize-cli db:migrate:undo",
+    "up": "cross-env NODE_ENV=development npx sequelize-cli db:migrate",
+    "down": "cross-env NODE_ENV=development npx sequelize-cli db:migrate:undo",
     "seed-all": "cross-env NODE_ENV=development npx sequelize-cli db:seed:all",
     "seed-one": "cross-env NODE_ENV=development npx sequelize-cli db:seed --seed",
     "create-model": "npx sequelize-cli model:generate --name $npm_config_name --attributes $npm_config_columns",
-    "alter-column": "npx sequelize-cli migration:generate --name alter-column-name --table $npm_config_table --column $npm_config_column --new-type $npm_config_new_type",
-    "delete-column": "npx sequelize-cli migration:generate --name delete-column-name --table $npm_config_table --column $npm_config_column"
+    "alter-column": "npx sequelize-cli migration:generate --name alter-column-name -- --table=$npm_config_table --column=$npm_config_column --new-type=$npm_config_new_type",
+    "rename-column": "npx sequelize-cli migration:generate --name rename-$npm_config_column-to-$npm_config_new_column -- --table=$npm_config_table",
+    "add-column": "npx sequelize-cli migration:generate --name add-$npm_config_new_column-to-$npm_config_table -- --table=$npm_config_table",
+    "delete-column": "npx sequelize-cli migration:generate --name delete-column-name --table $npm_config_table -- --column $npm_config_column"
   },
   "keywords": [
     "node js",

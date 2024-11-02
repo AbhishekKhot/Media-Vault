@@ -66,7 +66,6 @@ class DatabaseInstance {
       password: url.password,
       database: url.pathname.slice(1),
     };
-    console.log(cred);
     return cred;
   }
 

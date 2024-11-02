@@ -24,14 +24,38 @@ module.exports = (sequelize, DataTypes) => {
       user_id: {
         allowNull: false,
         type: DataTypes.INTEGER,
+        validate: {
+          notNull: {
+            msg: "User ID is required.",
+          },
+          notEmpty: {
+            msg: "User ID must be an integer.",
+          },
+        },
       },
       role_id: {
         allowNull: false,
         type: DataTypes.INTEGER,
+        validate: {
+          notNull: {
+            msg: "Role ID is required.",
+          },
+          notEmpty: {
+            msg: "Role ID must be an integer.",
+          },
+        },
       },
-      expiry_time: {
+      expiry_date: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
+        validate: {
+          notNull: {
+            msg: "Expiry time is required.",
+          },
+          notEmpty: {
+            msg: "Expiry time must be a valid date.",
+          },
+        },
       },
     },
     {

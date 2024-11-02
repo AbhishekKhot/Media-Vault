@@ -17,10 +17,10 @@ npm install
 1. Run migration
    Command: 
    ```bash
-   npm run up --database=your_database_name
+   npm run up 
    ```
    ```bash
-   npm run down --database=your_database_name
+   npm run down
    ```
 
 2. Create a New Model

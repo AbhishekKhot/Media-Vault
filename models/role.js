@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "role_id",
         otherKey: "user_id",
       });
+      Role.belongsTo(models.User, {
+        foreignKey: "creator_id",
+        as: "creator",
+      });
     }
   }
   Role.init(
@@ -24,6 +28,18 @@ module.exports = (sequelize, DataTypes) => {
       },
       description: {
         type: DataTypes.TEXT,
+      },
+      creator_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: "Creator id is required.",
+          },
+          notEmpty: {
+            msg: "Creator id cannot be empty.",
+          },
+        },
       },
     },
     {
