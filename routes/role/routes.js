@@ -1,6 +1,10 @@
 "use strict";
 
-const { createRole, getRolesByCreator } = require("../../controller/roles");
+const {
+  createRole,
+  getRolesByCreator,
+  addUserAccess,
+} = require("../../controller/role");
 
 module.exports = async function rolesRoute(fastify) {
   const API_PREFIX = "/roles";
@@ -15,5 +19,11 @@ module.exports = async function rolesRoute(fastify) {
     method: "GET",
     url: API_PREFIX,
     handler: getRolesByCreator,
+  });
+
+  fastify.route({
+    method: "POST",
+    url: API_PREFIX + "/add-access",
+    handler: addUserAccess,
   });
 };

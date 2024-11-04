@@ -1,28 +1,38 @@
 "use strict";
 const db = require("../common/sequelize")();
-
+const bcrypt = require("bcryptjs");
 class User {
   async createUser(body) {
-    return await db.User.create(body);
-  }
-  async getUser(id) {
-    return await db.User.findByPk(id, {
-      include: [
-        {
-          model: db.UserRole,
-          include: [
-            {
-              model: db.Role,
-              attribute: ["label", "description"],
-            },
-          ],
-        },
-      ],
-      raw: true,
+    const { password } = body;
+    return await db.User.create({
+      ...body,
+      password: bcrypt.hashSync(password, 8),
     });
   }
-  async getUsers(params) {
-    return await db.findAll({ raw: true, ...params });
+  async getUserAndRoles(email) {
+    return await db.User.findOne({
+      where: {
+        email: email,
+      },
+      include: [
+        {
+          model: db.Role,
+          as: "createdRoles",
+        },
+        {
+          model: db.Role,
+          through: db.UserRole,
+          as: "roles",
+        },
+      ],
+    });
+  }
+  async getUser(email) {
+    return await db.User.findOne({
+      where: {
+        email: email,
+      },
+    });
   }
 }
 
