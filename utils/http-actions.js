@@ -4,78 +4,66 @@ const axios = require("axios");
 
 async function httpRequest({
   url,
-  requestData,
-  params,
+  method = "GET",
+  requestData = null,
+  params = null,
   headers = {},
   isRetry = true,
   maxAttempts = 5,
   currentAttempt = 1,
-  method = "GET",
   validateStatus = (status) => status >= 200 && status < 300,
 }) {
-  const config = {
-    url,
-    method,
-    data: requestData,
-    params,
-    headers: {
-      "Content-Type": "application/json",
-      ...headers,
-    },
-    validateStatus,
-  };
   try {
-    const response = await axios(config);
-    if (response.status >= 200 && response.status < 300) return response;
-    const msg = `${
-      response.status
-    }, Failed to send HTTP ${method} request [attempt ${currentAttempt}]: ${JSON.stringify(
-      requestData
-    )} url=${url}`;
-    console.log(msg);
-    if (
+    const response = await axios({
+      url,
+      method,
+      data: requestData,
+      params,
+      headers: { "Content-Type": "application/json", ...headers },
+      validateStatus,
+    });
+
+    return response;
+  } catch (error) {
+    const isRetryable =
       isRetry &&
       currentAttempt < maxAttempts &&
-      response.status >= 400 &&
-      response.status < 500
-    ) {
-      await new Promise((resolve) =>
-        setTimeout(resolve, Math.pow(2, currentAttempt) * 1000)
-      );
+      error.response &&
+      error.response.status >= 400 &&
+      error.response.status < 500;
 
+    console.log(
+      `HTTP ${method} attempt ${currentAttempt} failed: ${
+        error.message
+      } (status: ${error.response?.status || "unknown"}).`
+    );
+
+    if (isRetryable) {
+      const retryDelay = Math.pow(2, currentAttempt) * 1000;
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
       return httpRequest({
         url,
+        method,
         requestData,
         params,
         headers,
-        isRetry: true,
+        isRetry,
         maxAttempts,
-        method,
         currentAttempt: currentAttempt + 1,
+        validateStatus,
       });
-    } else {
-      return response;
     }
-  } catch (error) {
-    console.log(
-      `HTTP ${method} error [attempt ${currentAttempt}]: ${error.message}`
-    );
+
+    throw error;
   }
 }
 
-async function httpGetJson(options = {}) {
-  options.method = "GET";
-  return httpRequest(options);
+function createHttpMethod(method) {
+  return (options = {}) => httpRequest({ ...options, method });
 }
 
-async function httpPostJson(options = {}) {
-  options.method = "POST";
-  return httpRequest(options);
-}
+const httpGetJson = createHttpMethod("GET");
+const httpPostJson = createHttpMethod("POST");
+const httpPutJson = createHttpMethod("PUT");
 
-async function httpPutJson(options = {}) {
-  options.method = "PUT";
-  return httpRequest(options);
-}
-
-module.exports = { httpGetJson, httpPutJson, httpPostJson };
+module.exports = { httpGetJson, httpPostJson, httpPutJson };
