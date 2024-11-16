@@ -4,8 +4,8 @@ MediaVault an efficient file sharing application
 
 ## Prerequisites to run locally
 
-Node.js
-Postgresql
+Node.js\n
+Postgresql\n
 copy env from .env.example
 
 ## Setup
